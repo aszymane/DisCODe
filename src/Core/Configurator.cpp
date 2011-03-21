@@ -13,6 +13,7 @@
 #include "Component.hpp"
 #include "Event.hpp"
 #include "EventHandler.hpp"
+#include "Property.hpp"
 #include "DataStreamInterface.hpp"
 
 #include "ComponentManager.hpp"
@@ -111,6 +112,7 @@ void Configurator::loadExecutors(const ptree * node, Task & task) {
 	Executor * ex;
 
 	BOOST_FOREACH( TreeNode nd, *node) {
+		if (nd.first == "<xmlcomment>") continue;
 		ptree tmp = nd.second;
 		ex = executorManager->createExecutor(nd.first, tmp.get("<xmlattr>.type", "UNKNOWN"));
 		ex->load(tmp);
@@ -129,6 +131,9 @@ void Configurator::loadComponents(const ptree * node, Task & task) {
 	std::string thread;
 	std::string group;
 	std::string include;
+
+	Base::PropertyInterface * prop;
+
 	BOOST_FOREACH( TreeNode nd, *node) {
 		ptree tmp = nd.second;
 		name = nd.first;
@@ -174,6 +179,40 @@ void Configurator::loadComponents(const ptree * node, Task & task) {
 			}
 		}
 
+		//std::cout << name << " properties:\n";
+		kern->printProperties();
+
+
+		//std::cout << name << " properties defined in xml:" << std::endl;
+		/*BOOST_FOREACH( TreeNode nd2, tmp) {
+			//std::cout << nd2.first << "=[" << tmp.get(nd2.first, "") << "]" << std::endl;
+			prop = kern->getProperty(nd2.first);
+			if (prop != NULL) {
+				//std::cout << "\t- this property is present in component.\n";
+				if (prop->isPersistent()) {
+					//std::cout << "\t- this property is persistent.\n";
+					prop->retrieve(tmp.get(nd2.first, ""));
+				}
+			}
+		}*/
+
+		std::vector<std::string> props = kern->getAllProperties();
+		std::string s;
+
+		BOOST_FOREACH( std::string pr, props) {
+			prop = kern->getProperty(pr);
+			if (prop != NULL) {
+				if (prop->isPersistent()) {
+					s = tmp.get(pr, "");
+					if (s != "") prop->retrieve(s);
+					LOG(LNOTICE) << pr << "=[" << prop->store() << "] from [" << s << "]";
+				} else {
+					LOG(LNOTICE) << pr << "=[" << prop->store() << "]";
+				}
+			}
+		}
+
+
 		kern->initialize();
 
 		ex = executorManager->getExecutor(thread);
@@ -188,7 +227,7 @@ void Configurator::loadComponents(const ptree * node, Task & task) {
 }
 
 void Configurator::loadEvents(const ptree * node) {
-	LOG(LINFO) << "Connecting events\n";
+	LOG(LTRACE) << "Connecting events\n";
 	std::string src, dst, name, caller, receiver, type;
 	Base::Component * src_k, * dst_k;
 	Base::EventHandlerInterface * h;
@@ -242,7 +281,7 @@ void Configurator::loadEvents(const ptree * node) {
 			e->addHandler(h);
 		}
 
-		LOG(LINFO) << name << ": src=" << src << ", dst=" << dst << "\n";
+		LOG(LTRACE) << name << ": src=" << src << ", dst=" << dst << "\n";
 	}
 }
 

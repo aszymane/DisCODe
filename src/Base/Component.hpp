@@ -11,6 +11,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Base {
 
@@ -18,6 +19,7 @@ class Props;
 class Event;
 class EventHandlerInterface;
 class DataStreamInterface;
+class PropertyInterface;
 
 /*!
  * \class Component
@@ -46,6 +48,7 @@ class Component
 	typedef std::pair<std::string, Event *> EventPair;
 	typedef std::pair<std::string, EventHandlerInterface *> HandlerPair;
 	typedef std::pair<std::string, DataStreamInterface *> StreamPair;
+	typedef std::pair<std::string, PropertyInterface *> PropertyPair;
 
 public:
 	/*!
@@ -132,6 +135,8 @@ public:
 	 */
 	void printHandlers();
 
+	std::string listHandlers();
+
 	/*!
 	 * Returns event handler with specified name if registered or NULL.
 	 * \param name event handler name
@@ -152,9 +157,28 @@ public:
 	DataStreamInterface * getStream(const std::string& name);
 
 	/*!
+	 * Print list of all registered properties.
+	 */
+	void printProperties();
+
+	std::string listProperties();
+
+	std::vector<std::string> getAllProperties();
+
+	/*!
+	 * Returns property with specified name if registered or NULL.
+	 * \param name property name
+	 * \returns pointer to property with specified name or NULL if no such property is registered.
+	 */
+	PropertyInterface * getProperty(const std::string& name);
+
+
+	/*!
 	 * Return pointer to properties of this object.
 	 *
 	 * Should be overridden in derived classes containing specific properties.
+	 *
+	 * \deprecated
 	 */
 	virtual Props * getProperties();
 
@@ -219,9 +243,19 @@ protected:
 	 * Register new data stream under specified name.
 	 * \param name stream name
 	 * \param stream pointer to proper stream
-	 * \returns pointer to handler.
+	 * \returns pointer to stream.
 	 */
 	DataStreamInterface * registerStream(const std::string& name, DataStreamInterface * stream);
+
+
+	/*!
+	 * Register new property under specified name.
+	 * \param name property name
+	 * \param prop pointer to property
+	 * \returns pointer to property.
+	 */
+	PropertyInterface * registerProperty(const std::string& name, PropertyInterface * prop);
+	PropertyInterface * registerProperty(PropertyInterface & prop);
 
 private:
 	/// name of particular object
@@ -238,6 +272,9 @@ private:
 
 	/// all registered data streams
 	std::map<std::string, DataStreamInterface *> streams;
+
+	/// all registered properties
+	std::map<std::string, PropertyInterface *> properties;
 
 };
 
