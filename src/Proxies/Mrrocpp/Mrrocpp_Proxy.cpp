@@ -125,6 +125,7 @@ void Mrrocpp_Proxy::tryAcceptConnection()
 	readingMessage.reset();
 	rpcResultMessage.reset();
 	LOG(LNOTICE) << "Client connected.";
+	LOG(LTRACE) << "Client connected.";
 	state = MPS_CONNECTED;
 }
 
@@ -163,6 +164,11 @@ void Mrrocpp_Proxy::tryReceiveFromMrrocpp()
 void Mrrocpp_Proxy::onNewReading()
 {
 	mutex::scoped_lock lock(readingMutex);
+	LOG(LTRACE) << "Receiving reading.";
+	if(reading.empty()){
+		LOG(LWARNING) << "Empty buffer Mrrocpp_Proxy::onNewReading() (" << name() << ")"; 
+	}
+	
 	readingMessage = reading.read();
 	if (!in_timestamp.empty()) {
 		readingTimestamp = in_timestamp.read();

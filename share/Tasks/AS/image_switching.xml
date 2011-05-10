@@ -1,0 +1,286 @@
+<Task>
+	<Components>
+		<ImageSource1 type="CameraUniCap" thread="ImageSourceThread1" group="s1">
+			<dev>
+				<device>/dev/video0</device>
+				<!-- <input>S-Video</input>  -->
+				
+					<input>Composite0</input>
+				
+			</dev>
+		</ImageSource1>
+
+		<NewestImage1 type="NewestImage" thread="ProcessingThread1" group="s1">
+		</NewestImage1>
+		
+		<BGRToGray1 type="CvColorConv" thread="ProcessingThread1" group="s1">
+			<type>BGR2GRAY</type>
+		</BGRToGray1>
+		
+		<FindChessboard1 type="CvFindChessboardCorners" thread="ProcessingThread1" group="s1">
+			<chessboard>
+				<width>4</width>
+				<height>3</height>
+				<square_height>0.02</square_height>
+				<square_width>0.02</square_width>
+			</chessboard>
+			
+			<scale>1</scale>
+			<scale_factor>2</scale_factor>
+			<subpix>1</subpix>
+			<subpix_window>7</subpix_window>
+
+			<flags>
+				<fast_check>1</fast_check>
+				<filter_quads>1</filter_quads>
+				<adaptive_treshold>1</adaptive_treshold>
+				<normalize_image>0</normalize_image>
+			</flags>
+		</FindChessboard1>
+		
+		<PositionEstimator1 type="CvSolvePnP" thread="ProcessingThread1" group="s1">
+			<cameraMatrix>
+				[3,3](
+					(647.07647705, 0., 383.50000000),
+					(0., 632.76348877, 287.50000000),
+					(0, 0, 1)
+				)
+			</cameraMatrix>
+			<distCoeffs>
+				[1,5](
+					(-0.51084775, 0.23313555, 4.50637517e-03, -6.86281081e-03, 4.94365674e-03)
+				)
+			</distCoeffs>
+		</PositionEstimator1>
+		
+		<VisualServoPB1 type="VisualServoPB" thread="ProcessingThread1" group="s1">
+		</VisualServoPB1>
+				
+		<Mrrocpp1 type="Mrrocpp" thread="MrrocProxyThread1" group="s1">
+			<port>8888</port>
+		</Mrrocpp1>
+		
+		<!-- <Window1 type="CvWindow" thread="PreviewExecutor" group="s1">
+			<title>Preview1</title>
+		</Window1> -->
+		
+		<ImageSource2 type="CameraUniCap" thread="ImageSourceThread2" group="s1">
+			<dev>
+				<device>/dev/video1</device>
+				<!-- <input>S-Video</input>  -->
+				
+				<input>Composite0</input>
+				
+			</dev>
+			<image> 
+				<brightness>0.3</brightness>
+				<contrast>0.4</contrast>
+			</image>
+		</ImageSource2>
+		
+		<NewestImage2 type="NewestImage" thread="ProcessingThread2" group="s1">
+		</NewestImage2>
+		
+		<BGRToGray2 type="CvColorConv" thread="ProcessingThread2" group="s1">
+			<type>BGR2GRAY</type>
+		</BGRToGray2>
+		
+		<FindChessboard2 type="CvFindChessboardCorners" thread="ProcessingThread2" group="s1">
+			<chessboard>
+				<width>4</width>
+				<height>3</height>
+				<square_height>0.02</square_height>
+				<square_width>0.02</square_width>
+			</chessboard>
+			
+			<scale>1</scale>
+			<scale_factor>2</scale_factor>
+			<subpix>1</subpix>
+			<subpix_window>7</subpix_window>
+
+			<findSubpix>true</findSubpix>
+			<squareSize>0.02</squareSize>
+			
+			<flags>
+				<fast_check>1</fast_check>
+				<filter_quads>0</filter_quads>
+				<adaptive_treshold>1</adaptive_treshold>
+				<normalize_image>0</normalize_image>
+			</flags>
+		</FindChessboard2>
+		
+		<PositionEstimator2 type="CvSolvePnP" thread="ProcessingThread2" group="s1">
+			<cameraMatrix>
+				[3,3](
+					(1794.47, 0, 319.5),
+					(0, 1809.86, 239.5),
+					(0, 0, 1)	
+				)
+			</cameraMatrix>
+			<distCoeffs>
+				[1,5](
+					(0, 1, 6.91793e-310, 4.94066e-324, 6.91791e-310)
+				)
+			</distCoeffs>
+		</PositionEstimator2>
+		
+		<VisualServoPB2 type="VisualServoPB" thread="ProcessingThread2" group="s1">
+		</VisualServoPB2>
+		
+		<Mrrocpp2 type="Mrrocpp" thread="MrrocProxyThread2" group="s1">
+			<port>8889</port>
+		</Mrrocpp2>
+		
+		<!-- <Window2 type="CvWindow" thread="PreviewExecutor" group="s1">
+			<title>Preview2</title>
+		</Window2> -->
+		
+		<Window type="CvWindow" thread="PreviewExecutor" group="s1">
+			<count>2</count>
+			<title>Preview </title>
+		</Window>
+	</Components>
+
+	<Executors>
+		<ImageSourceThread1 type="passive">
+			<main_component>ImageSource1</main_component>
+		</ImageSourceThread1>
+		
+		<ProcessingThread1 type="passive">
+			<main_component>NewestImage1</main_component>
+		</ProcessingThread1>
+		
+		<MrrocProxyThread1 type="continuous">
+			<main_component>Mrrocpp1</main_component>
+		</MrrocProxyThread1>
+		
+		<PreviewExecutor type="periodic">
+			<main_component>Window</main_component>
+			<interval>0.03</interval>
+		</PreviewExecutor>
+		
+		<ImageSourceThread2 type="passive">
+			<main_component>ImageSource2</main_component>
+		</ImageSourceThread2>
+		
+		<ProcessingThread2 type="passive">
+			<main_component>NewestImage2</main_component>
+		</ProcessingThread2>
+		
+		<MrrocProxyThread2 type="continuous">
+			<main_component>Mrrocpp2</main_component>
+		</MrrocProxyThread2>
+		
+		<!-- PreviewExecutor2 type="periodic">
+			<main_component>Window2</main_component>
+			<interval>0.05</interval>
+		</PreviewExecutor2 -->
+	</Executors>
+
+	<Events>
+		<Event source="ImageSource1.newImage" destination="NewestImage1.onNewImage"/>
+		<Event source="NewestImage1.newImage" destination="BGRToGray1.onNewImage"/>
+		
+		<Event source="BGRToGray1.newImage" destination="FindChessboard1.onNewImage"/>
+		<Event source="FindChessboard1.chessboardFound" destination="PositionEstimator1.onNewObject3D"/>
+		<Event source="PositionEstimator1.objectLocated" destination="VisualServoPB1.onObjectLocated"/>
+		<Event source="FindChessboard1.chessboardNotFound" destination="VisualServoPB1.onObjectNotFound"/>
+		
+		<Event source="VisualServoPB1.readingReady" destination="Mrrocpp1.onNewReading"/>
+		
+		<Event source="ImageSource1.newImage" destination="Window.onNewImage0"/>
+		
+		<Event source="ImageSource2.newImage" destination="NewestImage2.onNewImage"/>
+		<Event source="NewestImage2.newImage" destination="BGRToGray2.onNewImage"/>
+		<Event source="BGRToGray2.newImage" destination="FindChessboard2.onNewImage"/>
+		<Event source="FindChessboard2.chessboardFound" destination="PositionEstimator2.onNewObject3D"/>
+		<Event source="PositionEstimator2.objectLocated" destination="VisualServoPB2.onObjectLocated"/>
+		<Event source="FindChessboard2.chessboardNotFound" destination="VisualServoPB2.onObjectNotFound"/>
+		<Event source="VisualServoPB2.readingReady" destination="Mrrocpp2.onNewReading"/>
+		<Event source="ImageSource2.newImage" destination="Window.onNewImage1"/>
+	</Events>
+
+	<DataStreams>
+		<ImageSource1>
+			<out_img type="out" group="OriginalImage1"/>
+		</ImageSource1>
+		
+		<NewestImage1>
+			<in_img type="in" group="OriginalImage1"/>
+			<out_img type="out" group="NewestImage1"/>
+		</NewestImage1>
+		
+		<BGRToGray1>
+			<in_img  type="in" group="NewestImage1"/>
+			<out_img type="out" group="GrayImage1"/>
+		</BGRToGray1>
+		
+		<FindChessboard1>
+			<in_img type="in" group="GrayImage1"/>
+			<out_chessboard type="out" group="Chessboard1"/>
+		</FindChessboard1>
+				
+		<PositionEstimator1>
+			<in_object3d type="in" group="Chessboard1"/>
+			<out_homogMatrix typr="out" group="position1"/>
+		</PositionEstimator1>
+		
+		<VisualServoPB1>
+			<in_position type="in" group="position1"/>
+			<out_reading type="out" group="reading1"/>
+		</VisualServoPB1>
+		
+		<Mrrocpp1>
+			<reading type="in" group="reading1"/>
+		</Mrrocpp1>
+		
+		<!-- <Window1>
+			<in_draw type="in" group="Chessboard1"/>
+			<in_img type="in" group="OriginalImage1"/>
+		</Window1> -->
+		
+		<ImageSource2>
+			<out_img type="out" group="OriginalImage2"/>
+		</ImageSource2>
+		
+		<NewestImage2>
+			<in_img type="in" group="OriginalImage2"/>
+			<out_img type="out" group="NewestImage2"/>
+		</NewestImage2>
+		
+		<BGRToGray2>
+			<in_img  type="in" group="NewestImage2"/>
+			<out_img type="out" group="GrayImage2"/>
+		</BGRToGray2>
+		
+		<FindChessboard2>
+			<in_img type="in" group="GrayImage2"/>
+			<out_chessboard type="out" group="Chessboard2"/>
+		</FindChessboard2>
+		
+		<PositionEstimator2>
+			<in_object3d type="in" group="Chessboard2"/>
+			<out_homogMatrix typr="out" group="position2"/>
+		</PositionEstimator2>
+		
+		<VisualServoPB2>
+			<in_position type="in" group="position2"/>
+			<out_reading type="out" group="reading2"/>
+		</VisualServoPB2>
+		
+		<Mrrocpp2>
+			<reading type="in" group="reading2"/>
+		</Mrrocpp2>
+		
+		<!-- <Window2>
+			<in_draw type="in" group="Chessboard2"/>
+			<in_img type="in" group="OriginalImage2"/>
+		</Window2> -->
+		<Window>
+			<in_draw0 type="in" group="Chessboard1"/>
+			<in_draw1 type="in" group="Chessboard2"/>
+			<in_img0 type="in" group="OriginalImage1"/>
+			<in_img1 type="in" group="OriginalImage2"/>
+		</Window>
+	</DataStreams>
+</Task>
