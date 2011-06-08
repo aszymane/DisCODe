@@ -5,8 +5,12 @@
          
         <ImageSource type="CameraUniCap" thread="MainExecutor" group="s1">
         	<dev>
-				<device>/dev/video0</device>
+				<device>/dev/video1</device>
 			</dev>
+			<image> 
+				<brightness>0.2</brightness>
+				<contrast>0.4</contrast>
+			</image>
 		</ImageSource>
 		
 		<!-- 
@@ -36,9 +40,9 @@
 			<resultsFilename>/home/mboryn/CameraCalib/Results.txt</resultsFilename>
 			
 			<storeOnNewImage>true</storeOnNewImage>
-			<width>9</width>
-			<height>6</height>
-			<squareSize>0.028</squareSize>
+			<width>6</width>
+			<height>4</height>
+			<squareSize>0.03</squareSize>
 			<findSubpix>true</findSubpix>
 		</CameraCalib>
 

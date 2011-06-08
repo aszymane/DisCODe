@@ -38,9 +38,9 @@
 				<square_width>0.02</square_width>
 			</chessboard>
 			
-			<scale>1</scale>
+			<scale>0</scale>
 			<scale_factor>2</scale_factor>
-			<subpix>1</subpix>
+			<subpix>0</subpix>
 			<subpix_window>7</subpix_window>
 
 			<flags>

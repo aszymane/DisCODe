@@ -4,11 +4,16 @@
 		<ImageSource type="CameraUniCap" thread="ImageSourceThread" group="s1">
 			<dev>
 				<device>/dev/video1</device>
-				<input>S-Video</input>
+				<!-- <input>S-Video</input>  -->
 				
-				<!-- <input>Composite0</input>  -->
+				<input>Composite0</input>
 				
 			</dev>
+			<image> 
+				<brightness>0.45</brightness>
+				<!-- <contrast>0.65</contrast> -->
+				<contrast>0.8</contrast>
+			</image>
 		</ImageSource>
 		
 		<NewestImage type="NewestImage" thread="ProcessingThread" group="s1">
@@ -48,14 +53,17 @@
 		<PositionEstimator type="CvSolvePnP" thread="ProcessingThread" group="s1">
 			<cameraMatrix>
 				[3,3](
-					(1794.47, 0, 319.5),
-					(0, 1809.86, 239.5),
+					<!-- (1794.47, 0, 319.5),
+					(0, 1809.86, 239.5), -->
+					(669.237,	0,	331.524),
+					(0,	663.331,	253.707),
 					(0, 0, 1)	
 				)
 			</cameraMatrix>
 			<distCoeffs>
 				[1,5](
-					(0, 1, 6.91793e-310, 4.94066e-324, 6.91791e-310)
+					<!-- (0, 1, 6.91793e-310, 4.94066e-324, 6.91791e-310) -->
+					(-0.0084559,	1,	0,	0.000503661,	0.176946)
 				)
 			</distCoeffs>
 		</PositionEstimator>
@@ -64,7 +72,7 @@
 		</VisualServoPB>
 		
 		<Mrrocpp type="Mrrocpp" thread="MrrocProxyThread" group="s1">
-			<port>8889</port>
+			<port>8888</port>
 		</Mrrocpp>
 		
 		<Window type="CvWindow" thread="PreviewExecutor" group="s1">
