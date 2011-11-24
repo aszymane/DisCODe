@@ -49,18 +49,17 @@
 		<PositionEstimator1 type="CvSolvePnP" thread="ProcessingThread1" group="s1">
 			<cameraMatrix>
 				[3,3](
-					<!--(492.325,	0,	320.638	),
-					(0,	481.455,	214.922	),-->
-					(2881.83,	0,	567.771	),
-					(0,	2933.93,	426.504),	
+					(492.325,	0,	320.638	),
+					(0,	481.455,	214.922	),
+<!--					(647.07647705, 0., 383.50000000),
+					(0., 632.76348877, 287.50000000),-->
 					(0, 0, 1)
 				)
 			</cameraMatrix>
 			<distCoeffs>
 				[1,5](
 <!--					(-0.51084775, 0.23313555, 4.50637517e-03, -6.86281081e-03, 4.94365674e-03)-->
-<!--					(-0.452464,	1,	8.69465e-317,	0,	6.91261e-310)-->
-					(-0.487461,	1,	4.24399e-314,	0,	0)
+					(-0.452464,	1,	8.69465e-317,	0,	6.91261e-310)
 				)
 			</distCoeffs>
 		</PositionEstimator1>
@@ -78,34 +77,31 @@
 		
 		<!--- SAC -->
 		
-		<ImageSource2 type="CameraGigE" thread="ImageSourceThread2" group="s1">
-			<Address>192.168.1.2</Address>
-			<Controls>
-				<Gain>
-					<Mode>Manual</Mode>
-					<Value>0</Value>
-				</Gain>
-				<Exposure>
-					<Mode></Mode>
-				</Exposure>
-			</Controls>
-			<ImageFormat>
-				<ROI>
-					<Width>1280</Width>
-					<Height>960</Height>
-				</ROI>
-				<PixelFormat>Bgr24</PixelFormat>
-			</ImageFormat>
+		<ImageSource2 type="CameraUniCap" thread="ImageSourceThread2" group="s1">
+			<dev>
+				<device>/dev/video1</device>
+				<!-- <input>S-Video</input>  -->
+				
+				<input>Composite0</input>
+				
+			</dev>
+			<image> 
+				<!--<brightness>0.4</brightness>-->
+				<contrast>0.59</contrast>
+				<!--brightness>0.45</brightness-->
+				<!-- <contrast>0.65</contrast> -->
+				<!--contrast>0.8</contrast -->
+			</image>
 		</ImageSource2>
 		
 		<NewestImage2 type="NewestImage" thread="ProcessingThread2" group="s1">
 		</NewestImage2>
 		
-		<BGRToGray2 type="CvColorConv" thread="ImageSourceThread2" group="s1">
+		<BGRToGray2 type="CvColorConv" thread="ProcessingThread2" group="s1">
 			<type>BGR2GRAY</type>
-		</BGRToGray2> 
+		</BGRToGray2>
 		
-		<FindChessboard2 type="CvFindChessboardCorners" thread="ImageSourceThread2" group="s1">
+		<FindChessboard2 type="CvFindChessboardCorners" thread="ProcessingThread2" group="s1">
 			<chessboard>
 				<width>4</width>
 				<height>3</height>
@@ -113,22 +109,24 @@
 				<square_width>0.01</square_width>
 			</chessboard>
 			
-			<scale>1</scale>
+			<scale>0</scale>
 			<scale_factor>2</scale_factor>
-			<subpix>1</subpix>
+			<subpix>0</subpix>
 			<subpix_window>7</subpix_window>
 
+			<findSubpix>true</findSubpix>
 			<squareSize>0.01</squareSize>
 			
 			<flags>
 				<fast_check>1</fast_check>
 				<filter_quads>0</filter_quads>
-				<adaptive_treshold>0</adaptive_treshold>
+				<adaptive_treshold>1</adaptive_treshold>
 				<normalize_image>0</normalize_image>
+				<scale>false</scale>
 			</flags>
 		</FindChessboard2>
 		
-		<PositionEstimator2 type="CvSolvePnP" thread="ImageSourceThread2" group="s1">
+		<PositionEstimator2 type="CvSolvePnP" thread="ProcessingThread2" group="s1">
 			<cameraMatrix>
 				[3,3](
 					(1261.495578, 0.000000, 309.938431),
@@ -149,7 +147,7 @@
 			</distCoeffs>
 		</PositionEstimator2>
 		
-		<VisualServoPB2 type="VisualServoPB" thread="ImageSourceThread2" group="s1">
+		<VisualServoPB2 type="VisualServoPB" thread="ProcessingThread2" group="s1">
 		</VisualServoPB2>
 		
 		<Mrrocpp2 type="Mrrocpp" thread="MrrocProxyThread2" group="s1">
@@ -184,7 +182,7 @@
 			<interval>0.03</interval>
 		</PreviewExecutor>
 		
-		<ImageSourceThread2 type="continuous">
+		<ImageSourceThread2 type="passive">
 			<main_component>ImageSource2</main_component>
 		</ImageSourceThread2>
 		
@@ -274,9 +272,9 @@
 		</NewestImage2>
 		
 		<BGRToGray2>
-			<in_img  type="in" group="OriginalImage2"/>
+			<in_img  type="in" group="NewestImage2"/>
 			<out_img type="out" group="GrayImage2"/>
-		</BGRToGray2> 
+		</BGRToGray2>
 		
 		<FindChessboard2>
 			<in_img type="in" group="GrayImage2"/>

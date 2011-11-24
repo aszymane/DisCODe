@@ -49,18 +49,17 @@
 		<PositionEstimator1 type="CvSolvePnP" thread="ProcessingThread1" group="s1">
 			<cameraMatrix>
 				[3,3](
-					<!--(492.325,	0,	320.638	),
-					(0,	481.455,	214.922	),-->
-					(2881.83,	0,	567.771	),
-					(0,	2933.93,	426.504),	
+					(492.325,	0,	320.638	),
+					(0,	481.455,	214.922	),
+<!--					(647.07647705, 0., 383.50000000),
+					(0., 632.76348877, 287.50000000),-->
 					(0, 0, 1)
 				)
 			</cameraMatrix>
 			<distCoeffs>
 				[1,5](
 <!--					(-0.51084775, 0.23313555, 4.50637517e-03, -6.86281081e-03, 4.94365674e-03)-->
-<!--					(-0.452464,	1,	8.69465e-317,	0,	6.91261e-310)-->
-					(-0.487461,	1,	4.24399e-314,	0,	0)
+					(-0.452464,	1,	8.69465e-317,	0,	6.91261e-310)
 				)
 			</distCoeffs>
 		</PositionEstimator1>
@@ -94,16 +93,16 @@
 					<Width>1280</Width>
 					<Height>960</Height>
 				</ROI>
-				<PixelFormat>Bgr24</PixelFormat>
+				<PixelFormat>Mono8</PixelFormat>
 			</ImageFormat>
 		</ImageSource2>
 		
-		<NewestImage2 type="NewestImage" thread="ProcessingThread2" group="s1">
+		<!--<NewestImage2 type="NewestImage" thread="ProcessingThread2" group="s1">
 		</NewestImage2>
-		
-		<BGRToGray2 type="CvColorConv" thread="ImageSourceThread2" group="s1">
+		-->
+		<!--<BGRToGray2 type="CvColorConv" thread="ImageSourceThread2" group="s1">
 			<type>BGR2GRAY</type>
-		</BGRToGray2> 
+		</BGRToGray2> -->
 		
 		<FindChessboard2 type="CvFindChessboardCorners" thread="ImageSourceThread2" group="s1">
 			<chessboard>
@@ -188,10 +187,10 @@
 			<main_component>ImageSource2</main_component>
 		</ImageSourceThread2>
 		
-		<ProcessingThread2 type="passive">
+	<!--	<ProcessingThread2 type="passive">
 			<main_component>NewestImage2</main_component>
 		</ProcessingThread2>
-		
+		-->
 		<MrrocProxyThread2 type="continuous">
 			<main_component>Mrrocpp2</main_component>
 		</MrrocProxyThread2>
@@ -215,9 +214,7 @@
 		
 		<Event source="ImageSource1.newImage" destination="Window.onNewImage0"/>
 		
-		<Event source="ImageSource2.newImage" destination="NewestImage2.onNewImage"/>
-		<Event source="NewestImage2.newImage" destination="BGRToGray2.onNewImage"/>
-		<Event source="BGRToGray2.newImage" destination="FindChessboard2.onNewImage"/>
+		<Event source="ImageSource2.newImage" destination="FindChessboard2.onNewImage"/>
 		<Event source="FindChessboard2.chessboardFound" destination="PositionEstimator2.onNewObject3D"/>
 		<Event source="PositionEstimator2.objectLocated" destination="VisualServoPB2.onObjectLocated"/>
 		<Event source="FindChessboard2.chessboardNotFound" destination="VisualServoPB2.onObjectNotFound"/>
@@ -268,18 +265,18 @@
 			<out_img type="out" group="OriginalImage2"/>
 		</ImageSource2>
 		
-		<NewestImage2>
+		<!--<NewestImage2>
 			<in_img type="in" group="OriginalImage2"/>
 			<out_img type="out" group="NewestImage2"/>
 		</NewestImage2>
-		
-		<BGRToGray2>
+		-->
+		<!--<BGRToGray2>
 			<in_img  type="in" group="OriginalImage2"/>
 			<out_img type="out" group="GrayImage2"/>
-		</BGRToGray2> 
+		</BGRToGray2> -->
 		
 		<FindChessboard2>
-			<in_img type="in" group="GrayImage2"/>
+			<in_img type="in" group="OriginalImage2"/>
 			<out_chessboard type="out" group="Chessboard2"/>
 		</FindChessboard2>
 		
